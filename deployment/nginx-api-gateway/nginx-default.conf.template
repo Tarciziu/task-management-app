@@ -1,0 +1,13 @@
+upstream api-gateway {
+  server api-gateway-service-node1:8080;
+  server api-gateway-service-node2:8080;
+}
+
+server {
+  location / {
+    proxy_pass http://api-gateway;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}

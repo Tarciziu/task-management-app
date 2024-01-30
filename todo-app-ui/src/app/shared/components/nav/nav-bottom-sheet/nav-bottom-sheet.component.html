@@ -1,0 +1,28 @@
+<mat-nav-list>
+  @for (navLink of allNavLinksWithActions; track navLink.id) {
+    @if (navLink.routerLink) {
+      <a
+        mat-list-item
+        [routerLink]="navLink.routerLink"
+        routerLinkActive="menu-item--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="openLink($event)">
+        <span matListItemTitle class="flex-row gap-sm">
+          <span class="material-symbols-outlined">
+            {{ navLink.matIcon }}
+          </span>
+
+          {{ navLink.labelKey | translate }}
+        </span>
+      </a>
+    }
+
+    @if (navLink.onClick) {
+      <a mat-button (click)="navLink.onClick()">
+        <div class="justify-start">
+          <span>{{ navLink.labelKey | translate }}</span>
+        </div>
+      </a>
+    }
+  }
+</mat-nav-list>

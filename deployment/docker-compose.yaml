@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # dependencies
+  mongo:
+    image: mongo:6.0.5
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+    ports:
+      - "27032:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ubb-platform-service-private
+  rabbit-mq:
+    image: rabbitmq:3.12.11-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbit-mq-data:/var/lib/rabbitmq
+    networks:
+      - ubb-platform-service-private
+  kafka:
+    image: bitnami/kafka:3.4.1
+    restart: always
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONNECTIONS_FROM_HOST://:19092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092,CONNECTIONS_FROM_HOST://localhost:19092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    ports:
+      - "19092:19092" # localhost listener
+    volumes:
+      - kafka-data:/bitnami
+    networks:
+      - ubb-platform-service-private
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "9888:8080"
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: kafka_instance
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    networks:
+      - ubb-platform-service-private
+  # apps
+  api-gateway-service-node1:
+    build:
+      context: ../todo-gateway-service
+    environment:
+      TASK_MGMT_SERVICE_URI: http://task-mgmt-service:8080
+      USER_SERVICE_URI: http://user-service:8080
+    networks:
+      - ubb-platform-service-private
+  api-gateway-service-node2:
+    build:
+      context: ../todo-gateway-service
+    environment:
+      TASK_MGMT_SERVICE_URI: http://task-mgmt-service:8080
+      USER_SERVICE_URI: http://user-service:8080
+    networks:
+      - ubb-platform-service-private
+  user-service:
+    build:
+      context: ../user-service
+    environment:
+      GATEWAY_API_PREFIX: /api
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_PORT: ${RABBIT_MQ_PORT}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
+      WAIT_HOSTS: ${MONGO_HOST}:${MONGO_PORT},${RABBIT_MQ_HOST}:${RABBIT_MQ_PORT}
+    networks:
+      - ubb-platform-service-private
+  task-mgmt-service:
+    build:
+      context: ../task-mgmt-service
+    environment:
+      GATEWAY_API_PREFIX: /api
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_PORT: ${RABBIT_MQ_PORT}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
+      WAIT_HOSTS: ${MONGO_HOST}:${MONGO_PORT},${RABBIT_MQ_HOST}:${RABBIT_MQ_PORT}
+    networks:
+      - ubb-platform-service-private
+  notification-processor-service:
+    build:
+      context: ../notification-processor-service
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MONGO_DATABASE: ${MONGO_DATABASE}
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_PORT: ${RABBIT_MQ_PORT}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
+      WAIT_HOSTS: ${MONGO_HOST}:${MONGO_PORT},${RABBIT_MQ_HOST}:${RABBIT_MQ_PORT},${KAFKA_BOOTSTRAP_SERVERS}
+    networks:
+      - ubb-platform-service-private
+  notification-sender-service:
+    build:
+      context: ../notification-sender-service
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    networks:
+      - ubb-platform-service-private
+  todo-app-ui:
+    build:
+      context: ../todo-app-ui
+    networks:
+      - ubb-platform-service-private
+  nginx-api-gateway:
+    build:
+      context: nginx-api-gateway
+    restart: always
+    networks:
+      - ubb-platform-service-private
+  nginx-gateway:
+    build:
+      context: nginx-gateway
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - ubb-platform-service-private
+volumes:
+  mongo-data:
+  rabbit-mq-data:
+  kafka-data:
+networks:
+  ubb-platform-service-private:

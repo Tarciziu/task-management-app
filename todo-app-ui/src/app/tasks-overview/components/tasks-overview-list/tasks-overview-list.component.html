@@ -1,0 +1,122 @@
+<div>
+  <div
+    *ngIf="_loading; else table"
+    style="height: 600px"
+    class="flex-row justify-center align-center">
+    <mat-progress-spinner
+      color="primary"
+      mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <ng-template #table>
+    <table mat-table class="full-width" *ngIf="!_loading" [dataSource]="_data">
+      <!-- name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.name' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.name }}
+        </td>
+      </ng-container>
+
+      <!-- description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.description' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.description }}
+        </td>
+      </ng-container>
+
+      <!-- priority Column -->
+      <ng-container matColumnDef="priority">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.priority' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <span [class]="'priority priority--' + row.priority.toLowerCase()">
+            {{ 'enums.priority.' + row.priority | translate }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- deadline Column -->
+      <ng-container matColumnDef="deadline">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.deadline' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.deadline ? (row.deadline | date: 'dd.MM.yyyy h:mm a') : '-' }}
+        </td>
+      </ng-container>
+
+      <!-- createdAt Column -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.createdAt' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.createdAt | date: 'dd.MM.yyyy h:mm a' }}
+        </td>
+      </ng-container>
+
+      <!-- updatedAt Column -->
+      <ng-container matColumnDef="updatedAt">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.updatedAt' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.updatedAt | date: 'dd.MM.yyyy h:mm a' }}
+        </td>
+      </ng-container>
+
+      <!-- status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'tasks-overview.header.status' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <span [class]="'status status--' + row.status.toLowerCase()">
+            {{ 'enums.status.' + row.status | translate }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <div class="flex-row">
+            <button
+              mat-icon-button
+              [matTooltip]="'tasks-overview.header.actions.edit' | translate"
+              matTooltipPosition="below"
+              (click)="onEditTask(row.id)">
+              <span class="material-symbols-outlined"> edit </span>
+            </button>
+
+            <button
+              mat-icon-button
+              [matTooltip]="'tasks-overview.header.actions.delete' | translate"
+              matTooltipPosition="below"
+              (click)="onDeleteTask(row.id)">
+              <span class="material-symbols-outlined"> delete </span>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; let i = index; columns: displayedColumns"></tr>
+    </table>
+  </ng-template>
+  <mat-paginator
+    [length]="_pagingMetadata?.totalItems ?? 0"
+    [pageIndex]="0"
+    [pageSize]="DEFAULT_ITEMS_PER_PAGE"
+    [pageSizeOptions]="PAGINATION_OPTIONS">
+  </mat-paginator>
+</div>

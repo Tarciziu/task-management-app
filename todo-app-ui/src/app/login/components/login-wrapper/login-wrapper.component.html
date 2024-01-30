@@ -1,0 +1,87 @@
+<div class="login__page">
+  <div class="login__container">
+    <div class="login__image">
+      <img
+        src="assets/login-banner.jpg"
+        height="auto"
+        width="100%"
+        alt="Banner" />
+    </div>
+    <div class="login__form padding-sm flex-col gap-md">
+      <div class="flex-col gap-sm">
+        <div>
+          <img
+            src="assets/todo-logo.png"
+            height="auto"
+            width="200"
+            priority="true"
+            alt="logo" />
+        </div>
+        <div>
+          <h4>{{ 'login.headings.connectTitle' | translate }}</h4>
+          <p>
+            {{ 'login.headings.connectSubtitle' | translate }}
+          </p>
+        </div>
+      </div>
+      <form class="flex-col gap-sm" [formGroup]="loginForm">
+        <mat-form-field>
+          <mat-label>{{ 'login.fields.email' | translate }}</mat-label>
+          <input type="text" matInput formControlName="email" />
+
+          <mat-error
+            *ngIf="hasFormControlError(loginForm.controls['email'], 'required')"
+            [innerHTML]="
+              'generic.validators.required'
+                | translate
+                  : {
+                      field: 'login.fields.email' | translate
+                    }
+            "></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'login.fields.password' | translate }}</mat-label>
+          <input type="password" matInput formControlName="password" />
+
+          <mat-error
+            *ngIf="
+              hasFormControlError(loginForm.controls['password'], 'required')
+            "
+            [innerHTML]="
+              'generic.validators.required'
+                | translate: { field: 'login.fields.password' | translate }
+            "></mat-error>
+        </mat-form-field>
+
+        <div class="flex-row justify-center">
+          <button
+            *ngIf="
+              (loginOperationStatus$ | async) !== OperationStatus.LOADING;
+              else loginLoading
+            "
+            type="submit"
+            (click)="login()"
+            mat-raised-button
+            color="primary"
+            [disabled]="!loginForm.valid">
+            {{ 'login.buttons.login' | translate }}
+          </button>
+          <ng-template #loginLoading>
+            <mat-spinner diameter="50"></mat-spinner>
+          </ng-template>
+        </div>
+      </form>
+
+      <div class="flex-row justify-center">
+        {{ 'login.headings.notAnAccount' | translate }}
+      </div>
+
+      <div class="flex-row justify-center">
+        <button mat-raised-button color="primary" routerLink="/sign-up">
+          {{ 'login.buttons.registerAccount' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

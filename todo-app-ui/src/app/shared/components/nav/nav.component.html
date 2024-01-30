@@ -1,0 +1,63 @@
+@if (isXSmallDevice) {
+  <!-- small device -->
+  <mat-toolbar color="primary">
+    <div class="flex-row align-center justify-center">
+      <button mat-icon-button (click)="onShowMenuClicked()">
+        <span class="material-symbols-outlined"> menu </span>
+      </button>
+      <div>
+        <img
+          src="assets/todo-logo-transparent.png"
+          height="64px"
+          width="100%"
+          alt="Banner"
+          [routerLink]="'/' + pathConstants.tasksOverview" />
+      </div>
+    </div>
+  </mat-toolbar>
+} @else {
+  <!-- Any other device -->
+  <mat-toolbar color="primary">
+    <div class="flex-row align-center justify-between full-width">
+      <div>
+        <img
+          src="assets/todo-logo-transparent.png"
+          height="64px"
+          width="100%"
+          alt="Banner"
+          class="logo"
+          [routerLink]="'/' + pathConstants.tasksOverview" />
+      </div>
+
+      <div class="flex-row gap-sm">
+        @for (navLink of allNavLinksWithActions; track navLink.id) {
+          @if (navLink.routerLink) {
+            <a
+              mat-button
+              [routerLink]="navLink.routerLink"
+              routerLinkActive="menu-item--active"
+              [routerLinkActiveOptions]="{ exact: true }">
+              <div
+                class="justify-start"
+                [matTooltip]="navLink.labelKey | translate"
+                matTooltipPosition="below">
+                <span>{{ navLink.labelKey | translate }}</span>
+              </div>
+            </a>
+          }
+
+          @if (navLink.onClick) {
+            <a mat-button (click)="navLink.onClick()">
+              <div
+                class="justify-start"
+                [matTooltip]="navLink.labelKey | translate"
+                matTooltipPosition="below">
+                <span>{{ navLink.labelKey | translate }}</span>
+              </div>
+            </a>
+          }
+        }
+      </div>
+    </div>
+  </mat-toolbar>
+}

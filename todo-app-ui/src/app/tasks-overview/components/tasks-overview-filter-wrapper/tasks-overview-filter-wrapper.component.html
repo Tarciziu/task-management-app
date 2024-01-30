@@ -1,0 +1,32 @@
+<form class="flex-row gap-lg" [formGroup]="filterForm">
+  <mat-form-field>
+    <mat-label>{{ 'tasks-overview.filter.fields.name' | translate }}</mat-label>
+    <input type="text" matInput formControlName="name" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>{{
+      'tasks-overview.filter.fields.priority' | translate
+    }}</mat-label>
+    <mat-select formControlName="priority">
+      @for (priority of allTaskPriorities; track priority) {
+        <mat-option [value]="priority">
+          {{ 'enums.priority.' + priority | translate }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>{{
+      'tasks-overview.filter.fields.status' | translate
+    }}</mat-label>
+    <mat-select formControlName="status">
+      @for (status of allTaskStatuses; track status) {
+        <mat-option [value]="status">
+          {{ 'enums.status.' + status | translate }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>

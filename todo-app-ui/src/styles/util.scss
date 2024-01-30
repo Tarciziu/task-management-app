@@ -1,0 +1,24 @@
+//breakpoints
+$breakpoints: (
+  "xs" : 0,
+  "sm": 768px,
+  "md": 992px,
+  "lg": 1200px,
+  "xl": 1400px,
+);
+
+// sizes
+$size-sm: 8px;
+$size-md: 16px;
+$size-lg: 32px;
+$size-xl: 48px;
+
+// colors
+$color-success: #00a86c;
+$color-error: #f44336;
+
+@mixin breakpoint($point) {
+  @media (min-width: map-get($breakpoints, $point)) {
+    @content ;
+  }
+}

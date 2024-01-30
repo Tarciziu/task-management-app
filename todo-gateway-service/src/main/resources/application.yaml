@@ -1,0 +1,36 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-routing
+          uri: ${USER_SERVICE_URI}
+          predicates:
+            - Path=/api/user-service/v1/**
+          filters:
+            - RewritePath=/api/(?<remaining>.*), /$\{remaining}
+        - id: task-mgmt-routing
+          uri: ${TASK_MGMT_SERVICE_URI}
+          predicates:
+            - Path=/api/task-mgmt-service/v1/**
+          filters:
+            - AuthenticationFilter
+            - RewritePath=/api/(?<remaining>.*), /$\{remaining}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /api/swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /api/user-service/v1/v3/api-docs
+        name: User Service
+      - url: /api/task-mgmt-service/v1/v3/api-docs
+        name: Task Management Service
+app:
+  auth:
+    session-validation-uri: ${USER_SERVICE_URI}/user-service/v1/auth/session-validation

@@ -1,0 +1,118 @@
+<div class="register__page">
+  <div class="register__container">
+    <div class="register__image">
+      <img
+        src="assets/register-banner.jpg"
+        height="auto"
+        width="100%"
+        alt="Banner" />
+    </div>
+    <div class="register__form padding-sm flex-col gap-md">
+      <div class="flex-col gap-sm">
+        <div>
+          <h4>{{ 'register.headings.connectTitle' | translate }}</h4>
+          <p>
+            {{ 'register.headings.connectSubtitle' | translate }}
+          </p>
+        </div>
+      </div>
+      <form class="flex-col gap-sm" [formGroup]="registerForm">
+        <mat-form-field>
+          <mat-label>{{ 'register.fields.firstName' | translate }}</mat-label>
+          <input type="text" matInput formControlName="firstName" />
+
+          <mat-error
+            *ngIf="
+              hasFormControlError(
+                registerForm.controls['firstName'],
+                'required'
+              )
+            "
+            [innerHTML]="
+              'generic.validators.required'
+                | translate
+                  : {
+                      field: 'register.fields.firstName' | translate
+                    }
+            "></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'register.fields.lastName' | translate }}</mat-label>
+          <input type="text" matInput formControlName="lastName" />
+
+          <mat-error
+            *ngIf="
+              hasFormControlError(registerForm.controls['lastName'], 'required')
+            "
+            [innerHTML]="
+              'generic.validators.required'
+                | translate
+                  : {
+                      field: 'register.fields.lastName' | translate
+                    }
+            "></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'register.fields.email' | translate }}</mat-label>
+          <input type="text" matInput formControlName="email" />
+
+          <mat-error
+            *ngIf="
+              hasFormControlError(registerForm.controls['email'], 'required')
+            "
+            [innerHTML]="
+              'generic.validators.required'
+                | translate
+                  : {
+                      field: 'register.fields.email' | translate
+                    }
+            "></mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'register.fields.password' | translate }}</mat-label>
+          <input type="password" matInput formControlName="password" />
+
+          <mat-error
+            *ngIf="
+              hasFormControlError(registerForm.controls['password'], 'required')
+            "
+            [innerHTML]="
+              'generic.validators.required'
+                | translate: { field: 'register.fields.password' | translate }
+            "></mat-error>
+        </mat-form-field>
+
+        <div class="flex-row justify-center">
+          <button
+            *ngIf="
+              (registerOperationStatus$ | async) !== OperationStatus.LOADING;
+              else registerLoading
+            "
+            type="submit"
+            (click)="register()"
+            mat-raised-button
+            color="primary"
+            [disabled]="!registerForm.valid">
+            {{ 'register.buttons.register' | translate }}
+          </button>
+          <ng-template #registerLoading>
+            <mat-spinner diameter="50"></mat-spinner>
+          </ng-template>
+        </div>
+      </form>
+
+      <div class="flex-row justify-center">
+        {{ 'register.headings.alreadyAnAccount' | translate }}
+      </div>
+
+      <div class="flex-row justify-center">
+        <button mat-raised-button color="primary" routerLink="/login">
+          {{ 'login.buttons.login' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="flex-row align-center gap-md">
+  <div>
+    <mat-icon *ngIf="type === 'SUCCESS'">check</mat-icon>
+    <mat-icon *ngIf="type === 'ERROR'">error_outline</mat-icon>
+  </div>
+
+  <div [innerHtml]="translateMessage | translate"></div>
+</div>

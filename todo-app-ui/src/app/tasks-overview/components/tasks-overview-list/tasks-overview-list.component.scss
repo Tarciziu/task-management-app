@@ -1,0 +1,42 @@
+// priority status
+.priority {
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+  padding: 3px 20px;
+
+  &--low {
+    background-color: #6D8CF6FF;
+  }
+
+  &--medium {
+    background-color: #ffaf33;
+  }
+
+  &--high {
+    background-color: #EE6A61FF;
+  }
+
+  &--urgent {
+    background-color: #F11505FF;
+  }
+}
+
+.status {
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+  padding: 3px 20px;
+
+  &--new {
+    background-color: #6D8CF6FF;
+  }
+
+  &--in_progress {
+    background-color: #ffaf33;
+  }
+
+  &--done {
+    background-color: #0db900;
+  }
+}

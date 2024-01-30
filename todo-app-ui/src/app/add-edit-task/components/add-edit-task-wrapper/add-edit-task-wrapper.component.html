@@ -1,0 +1,140 @@
+<app-base-page>
+  <div class="add-task__page">
+    <div class="add-task__container">
+      <div class="add-task__image">
+        <img
+          src="assets/add-task-banner.jpg"
+          height="auto"
+          width="100%"
+          alt="Banner" />
+      </div>
+      <div class="add-task__form padding-sm flex-col gap-md">
+        <div class="flex-col gap-sm">
+          <div>
+            <h4>
+              {{
+                'add-task.headings.' +
+                  (operation === AddEditOperation.CREATE
+                    ? 'add-task-title'
+                    : 'update-task-title') | translate
+              }}
+            </h4>
+            <p>
+              {{
+                'add-task.headings.' +
+                  (operation === AddEditOperation.CREATE
+                    ? 'add-task-subtitle'
+                    : 'update-task-subtitle') | translate
+              }}
+            </p>
+          </div>
+        </div>
+        <form class="flex-col gap-sm" [formGroup]="addTaskForm">
+          <mat-form-field>
+            <mat-label>{{ 'add-task.fields.name' | translate }}</mat-label>
+            <input type="text" matInput formControlName="name" />
+
+            <mat-error
+              *ngIf="
+                hasFormControlError(addTaskForm.controls['name'], 'required')
+              "
+              [innerHTML]="
+                'generic.validators.required'
+                  | translate
+                    : {
+                        field: 'add-task.fields.name' | translate
+                      }
+              "></mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{
+              'add-task.fields.description' | translate
+            }}</mat-label>
+            <textarea
+              type="text"
+              matInput
+              formControlName="description"
+              rows="4">
+            </textarea>
+
+            <mat-error
+              *ngIf="
+                hasFormControlError(
+                  addTaskForm.controls['description'],
+                  'required'
+                )
+              "
+              [innerHTML]="
+                'generic.validators.required'
+                  | translate
+                    : {
+                        field: 'add-task.fields.description' | translate
+                      }
+              "></mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ 'add-task.fields.priority' | translate }}</mat-label>
+            <mat-select formControlName="priority">
+              @for (priority of allTaskPriorities; track priority) {
+                <mat-option [value]="priority">
+                  {{ 'enums.priority.' + priority | translate }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <input
+              matInput
+              [min]="calendarMinDate"
+              [matDatepicker]="picker"
+              formControlName="deadline" />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>{{ 'add-task.fields.status' | translate }}</mat-label>
+            <mat-select formControlName="status">
+              @for (status of allTaskStatuses; track status) {
+                <mat-option [value]="status">
+                  {{ 'enums.status.' + status | translate }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="flex-row justify-center">
+            <button
+              *ngIf="
+                (addEditTaskOperationStatus$ | async) !==
+                  OperationStatus.LOADING;
+                else addTaskLoading
+              "
+              type="submit"
+              (click)="addTask()"
+              mat-raised-button
+              color="primary"
+              [disabled]="!addTaskForm.valid">
+              {{
+                'add-task.buttons.' +
+                  (operation === AddEditOperation.CREATE
+                    ? 'add-task'
+                    : 'update-task') | translate
+              }}
+            </button>
+            <ng-template #addTaskLoading>
+              <mat-spinner diameter="50"></mat-spinner>
+            </ng-template>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</app-base-page>

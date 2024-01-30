@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      auto-index-creation: true
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST}
+    port: ${RABBIT_MQ_PORT}
+    username: ${RABBIT_MQ_USER}
+    password: ${RABBIT_MQ_PASSWORD}
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+app:
+  messaging:
+    queues:
+      notifications: notifications
+    topics:
+      notifications:
+          EMAIL: "notifications.email"
+          REALTIME: "notifications.realtime"

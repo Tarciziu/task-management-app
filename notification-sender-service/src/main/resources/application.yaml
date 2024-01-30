@@ -1,0 +1,38 @@
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+  mail:
+    default-encoding: UTF-8
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+app:
+  messaging:
+    topics:
+      notifications:
+        EMAIL: "notifications.email"
+        REALTIME: "notifications.realtime"
+    templates:
+      email:
+        WELCOME:
+          subject: "Welcome to TODO App"
+          content: "Hello #{firstName} #{lastName},\nGlad you are using our application.\nBR,\nTODO Administrator"
+        TASK_ADDED:
+          subject: "New Task Added"
+          content: "Hello,\nA new task with name: #{name} was added.\nPriority:#{priority}\nPlease check the board in the application.\nBR,\nTODO Administrator"
+        TASK_DELETED:
+          subject: "Task Deleted"
+          content: "Hello,\nTask with name: #{name} was deleted.\nBR,\nTODO Administrator"
+        TASK_UPDATED:
+          subject: "Task Updated"
+          content: "Hello,\nTask with name: #{name} was updated.\nPlease check the board in the application.\n\nBR,\nTODO Administrator"

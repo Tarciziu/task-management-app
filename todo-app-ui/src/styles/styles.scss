@@ -1,0 +1,280 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+@use './util' as *;
+
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define your theme with color palettes, typography and density
+$my-app-primary: mat.define-palette(mat.$brown-palette);
+$my-app-accent: mat.define-palette(mat.$brown-palette, A200, A100, A400);
+$my-app-warn: mat.define-palette(mat.$red-palette);
+$my-app-success: mat.define-palette(mat.$green-palette);
+$my-app-danger: mat.define-palette(mat.$brown-palette);
+
+$mat-typography: mat.define-typography-config(
+  $font-family: 'Poppins',
+  $subtitle-2:
+    mat.define-typography-level(
+      $font-size: 13px,
+      $font-weight: 400,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $subtitle-1:
+    mat.define-typography-level(
+      $font-size: 16px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $headline-1:
+    mat.define-typography-level(
+      $font-size: 92px,
+      $line-height: 28px,
+      $font-weight: regular,
+      $font-family: Poppins,
+    ),
+  $headline-2:
+    mat.define-typography-level(
+      $font-size: 61px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $headline-3:
+    mat.define-typography-level(
+      $font-size: 48px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $headline-4:
+    mat.define-typography-level(
+      $font-size: 34px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $headline-5:
+    mat.define-typography-level(
+      $font-size: 24px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $headline-6:
+    mat.define-typography-level(
+      $font-size: 20px,
+      $font-weight: 500,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $body-2:
+    mat.define-typography-level(
+      $font-size: 12px,
+      $font-weight: 400,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $body-1:
+    mat.define-typography-level(
+      $font-size: 14px,
+      $font-weight: 400,
+      $line-height: 28px,
+      $font-family: Poppins,
+    ),
+  $button:
+    mat.define-typography-level(
+      $font-size: 14px,
+      $font-weight: regular,
+      $font-family: Poppins,
+    ),
+  $caption:
+    mat.define-typography-level(
+      $font-size: 12px,
+      $font-weight: Medium,
+      $font-family: Poppins,
+    ),
+  $overline:
+    mat.define-typography-level(
+      $font-size: 10px,
+      $font-weight: regular,
+      $font-family: Poppins,
+    ),
+);
+
+$mat-density: 0;
+$mat-dark-theme: mat.define-light-theme(
+    (
+      color: (
+        primary: $my-app-primary,
+        accent: $my-app-accent,
+        warn: $my-app-warn,
+      ),
+      density: $mat-density,
+    )
+);
+
+$mat-dark-theme: map.deep-merge(
+    $mat-dark-theme,
+    (
+      success: $my-app-success,
+      danger: $my-app-danger,
+      color: (
+        success: $my-app-success,
+        danger: $my-app-danger,
+      ),
+    )
+);
+
+@include mat.all-component-themes($mat-dark-theme);
+@include mat.all-component-densities($mat-density);
+@include mat.all-component-typographies($mat-typography);
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+// hide scrollbar on Chrome / Safari
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+* {
+  // hide scrollbar on Firefox / IE
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+// grid
+.grid {
+  display: grid;
+}
+
+//display flex
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.full-width {
+  width: 100%;
+}
+
+// gaps
+.gap-sm {
+  gap: $size-sm;
+}
+
+.gap-md {
+  gap: $size-md;
+}
+
+.gap-lg {
+  gap: $size-lg;
+}
+
+.gap-xl {
+  gap: $size-xl;
+}
+
+// padding
+.padding-sm {
+  padding: calc($size-sm + 2vw);
+}
+
+.padding-md {
+  padding: calc($size-md + 2vw);
+}
+
+.padding-lg {
+  padding: calc($size-lg + 2vw);
+}
+
+.padding-xl {
+  padding: calc($size-xl + 2vw);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $size-md $size-md;
+
+  @include breakpoint(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.base-page-container {
+  padding: calc($size-sm + 1.5625vw);
+}
+
+// control the width of sections
+.section {
+  width: 100%;
+}
+
+.section-content {
+  width: 100%;
+
+  @include breakpoint(sm) {
+    max-width: 95%;
+    margin: 0 auto;
+  }
+}
+
+.loading-fading {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: $size-sm;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+  width: 100%;
+  height: 1.2em;
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.rounded-bottom-sheet .mat-bottom-sheet-container {
+  @include breakpoint(xs) { // starting with 0px
+    border-radius: $size-md $size-md 0 0;
+  }
+}

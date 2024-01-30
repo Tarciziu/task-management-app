@@ -1,0 +1,28 @@
+<app-base-page>
+  <div>
+    <div class="flex-row align-center justify-between">
+      <app-tasks-overview-filter-wrapper
+        (filterChanged)="
+          onFilterChanged($event)
+        "></app-tasks-overview-filter-wrapper>
+      <div>
+        <button
+          mat-stroked-button
+          color="primary"
+          [routerLink]="'/' + pathConstants.addEditTasks">
+          <div class="flex-row justify-between align-center">
+            <span class="material-symbols-outlined"> add </span>
+            <span>{{ 'tasks-overview.buttons.add-task' | translate }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    <app-tasks-overview-list
+      [data]="currentPageTasks"
+      [loading]="operationStatus === OperationStatus.LOADING"
+      [pagingMetadata]="currentPagingMetadata"
+      (pageChanged)="onPageChanged($event)"
+      (taskDeleted)="onTaskDeleted($event)"
+      (taskEdited)="onTaskEdited($event)"></app-tasks-overview-list>
+  </div>
+</app-base-page>

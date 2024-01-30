@@ -1,0 +1,47 @@
+server:
+  servlet:
+    context-path: /user-service/v1
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST}
+    port: ${RABBIT_MQ_PORT}
+    username: ${RABBIT_MQ_USER}
+    password: ${RABBIT_MQ_PASSWORD}
+app:
+  auth:
+    jwt:
+      secret: MY_JWT_SECRET
+      expiry-in-seconds: 7200
+    security:
+      apis:
+        public-endpoints:
+          - method: POST
+            uris:
+              - /auth/sign-in
+              - /auth/login
+          - method: GET
+            uris:
+              - /swagger-ui/**
+              - /v3/api-docs/**
+        private-endpoints:
+          - uris:
+              - /auth/me
+              - /auth/session-validation
+              - /user-preferences
+      cors:
+        allowed-origins: '*'
+        allowed-methods: GET,POST,PUT,DELETE
+        allowed-headers:
+        exposed-headers:
+  gateway-api-prefix: ${GATEWAY_API_PREFIX:}
+  messaging:
+    queues:
+      notifications: notifications

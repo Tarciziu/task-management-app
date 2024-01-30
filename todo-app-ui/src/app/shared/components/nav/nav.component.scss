@@ -1,0 +1,10 @@
+.menu-item--active {
+  border-radius: 0;
+  border-bottom: 1px solid white;
+}
+
+.logo {
+  &:hover {
+    cursor: pointer;
+  }
+}
